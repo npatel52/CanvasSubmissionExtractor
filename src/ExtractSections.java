@@ -111,10 +111,6 @@ public class ExtractSections {
     private String getSection(String sectionNumber){
         return sectionNumber.substring("COP3502-".length());
     }
-        /**
-         * Add command line feature for one section
-         * Read from Excel create folders and subfolder with name
-         * Read from submissions map it to appropriate sections and folder
-         */
+
 
 }
