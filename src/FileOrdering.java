@@ -1,12 +1,22 @@
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+
+import java.util.List;
 
 public class FileOrdering {
     public static void main(String [] args){
-        ExtractSections es = new ExtractSections("src/test.xlsx","out/production","11H4");
-        es.ExtractSection();
+        /*
+        TO DO
+        First return the list for section, close file input stream
+        Then use unzip utility along with file ordering to order files
+
+         */
+
+        ExtractSections es = new ExtractSections("11H4");
+        List<String> studentList =  es.ExtractSection();
+        System.out.println(studentList.toString());
+        FileReordering fr = new FileReordering("11H4",studentList);
+        fr.unzipFiles();
+
+
        // System.out.println(es.ExtractSection("11H4"));
 
         /*

@@ -6,25 +6,21 @@ public class UnzipFile {
 
     byte [] buffer = new byte[1024];
     private String zipFilePath;
-    private String pathToDestination;
+    private final String PATH_TO_DESTINATION = "out" + File.separator ;
     private ZipInputStream zis;
     private String studentFolderName;
+    private String section;
 
 
-    public UnzipFile(String pathToSource, String pathToDestination, String subFolderName){
+    public UnzipFile(String pathToSource, String subFolderName, String sectionNumber){
         this.zipFilePath = pathToSource;
-        this.pathToDestination = pathToDestination;
         this.studentFolderName = subFolderName;
+        this.section  = sectionNumber;
     }
 
     public void unzip(){
 
         try {
-            File folder = new File(pathToDestination);
-
-            // Make folder if it doesn't exist
-            if (!folder.exists())
-                folder.mkdir();
 
             zis = new ZipInputStream(new FileInputStream(new File(zipFilePath)));
 
@@ -34,23 +30,16 @@ public class UnzipFile {
             // Only interested in src directory
             while(zpe != null){
                 System.out.println(zpe.getName());
-                if(zpe.getName().equals("src")){
-                    // This must be a Java file
-                    zpe = zis.getNextEntry();
-
 
                     if(zpe.getName().contains("java")) {
                         //Creates a folder with student name
-                        File studentFolder = new File(pathToDestination + File.separator + this.studentFolderName);
+                        File studentFolder = new File(this.PATH_TO_DESTINATION + this.section + File.separator + this.studentFolderName );
 
                         // make student folder sub directory
-                       studentFolder.mkdir();
-
-                        extract(zis, studentFolder.getAbsolutePath() + File.separator + "Lab.java");
-
-                        break;
+                       studentFolder.mkdirs();
+                       extract(zis, studentFolder.getAbsolutePath() + File.separator + "Lab.java");
+                       break;
                     }
-                }
 
                 zpe = zis.getNextEntry();
 
