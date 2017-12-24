@@ -1,55 +1,57 @@
 import java.io.File;
 import java.util.List;
 
-// Keep only .java files
-// create folder and sub folders
-
 public class FileReordering {
-    private final String PATH_TO_DESTINATION = "out";
-    private final String PATH_TO_SOURCE = "submissions";
+
+    private final String PATH_TO_DESTINATION = "out" + File.separator;
+    private final String PATH_TO_SOURCE = "submissions" + File.separator;
     private final String SECTION;
+
     private List<String> studentList;
-    private UnzipFile ufile;
-    // Array of sub-directory
     private File directory;
     private File [] SUBMISSIONS;
 
     public FileReordering(String section, List<String> studentList){
         this.SECTION = section;
         this.studentList = studentList;
-        directory = new File(PATH_TO_SOURCE + File.separator);
-        directory.mkdir();
+
+        // Object to access submissions
+        directory = new File(PATH_TO_SOURCE);
+        // Create an array of files containing submissions
         SUBMISSIONS = directory.listFiles();
 
-        // Create empty folder
+        // Create empty folder where output will be stored
         createFolder();
     }
 
     public void unzipFiles(){
         for(String name: studentList){
-            String pathToUnzip = searchPathTo(name);
-            if(pathToUnzip == null) {
-                createFolder(name);
+            String pathToZipFile = searchPathTo(name);
+            if(pathToZipFile == null) {
+                createFolder(name + "-Missing!");
             }else{
-                UnzipFile zipFile = new UnzipFile(pathToUnzip,name, this.SECTION);
-                zipFile.unzip();
+              extractFile(pathToZipFile,
+                        PATH_TO_DESTINATION + this.SECTION + File.separator + name, ".java", "Lab");
             }
-
-
         }
     }
 
-    // Uses binary search
+    /**
+     * Searches for student name in alphabetically ordered list of strings and returns
+     * path to the file submitted by that student.
+     * @param studentName name of student to search in the list of strings
+     * @return path to the location of file submitted by this student
+     */
     private String searchPathTo(String studentName){
-
 
       int start = 0;
       int end = SUBMISSIONS.length - 1;
       int mid = 0;
-      String fileName = "";
-      String justName = "";
+      String fileName;
+      String justName;
 
       while(start <= end){
+
         mid = (start + end)/2;
 
         // Actual file name
@@ -63,33 +65,38 @@ public class FileReordering {
             start = mid + 1;
         }else{
             // match found
-            return PATH_TO_SOURCE + File.separator + SUBMISSIONS[mid].getName();
+            return PATH_TO_SOURCE + SUBMISSIONS[mid].getName();
         }
 
       }
       return null;
     }
 
-
-
-    public void unzip() {
-        ufile.unzip();
+    private void extractFile(String pathToZipFile, String pathToDestination, String fileType, String fileName){
+        UnzipFile ufile = new UnzipFile(pathToZipFile, pathToDestination);
+        ufile.unzip(fileType, fileName);
     }
 
-    // Make empty folder for missing submission
 
+    /**
+     * Creates an empty folder in out named after section number.
+     */
     private void createFolder(){
         // Verifies if the path exist
         if(! (new File(this.PATH_TO_DESTINATION ).exists()) )
             new File(this.PATH_TO_DESTINATION ).mkdir();
 
         // Create a folder named with the section number
-        new File(this.PATH_TO_DESTINATION + File.separator + this.SECTION).mkdir();
+        new File(this.PATH_TO_DESTINATION + this.SECTION).mkdir();
     }
 
+    /**
+     * Creates a sub folder in output folder named after student name.
+     * @param folderName the name of the folder
+     */
     private void createFolder(String folderName){
         // Create a sub folder named with the student name
-        new File(this.PATH_TO_DESTINATION + File.separator + this.SECTION + File.separator +folderName + "---- Missing!").mkdirs();
+        new File(this.PATH_TO_DESTINATION +  this.SECTION + File.separator + folderName).mkdirs();
     }
 
 }

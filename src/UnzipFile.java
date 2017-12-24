@@ -6,45 +6,50 @@ public class UnzipFile {
 
     byte [] buffer = new byte[1024];
     private String zipFilePath;
-    private final String PATH_TO_DESTINATION = "out" + File.separator ;
-    private ZipInputStream zis;
-    private String studentFolderName;
-    private String section;
+    private String pathToDestination;
 
 
-    public UnzipFile(String pathToSource, String subFolderName, String sectionNumber){
+    public UnzipFile(String pathToSource, String pathToDestination){
         this.zipFilePath = pathToSource;
-        this.studentFolderName = subFolderName;
-        this.section  = sectionNumber;
+        this.pathToDestination = pathToDestination;
     }
 
-    public void unzip(){
+    /**
+     * Extract files of a given type from source and place it to the destination path.
+     * @param fileType an extension of a file ex: ".java", ".zip" etc
+     */
+    public void unzip(String fileType, String filename){
 
         try {
 
-            zis = new ZipInputStream(new FileInputStream(new File(zipFilePath)));
+            ZipInputStream zis = new ZipInputStream(new FileInputStream(new File(zipFilePath)));
 
-            // Read the entries of directories or files from the the zip file
-            // It reads files in sequential order
+            // Read the entries of directories or files from the the zip  in sequential order
             ZipEntry zpe = zis.getNextEntry();
-            // Only interested in src directory
+
             while(zpe != null){
-                System.out.println(zpe.getName());
 
-                    if(zpe.getName().contains("java")) {
-                        //Creates a folder with student name
-                        File studentFolder = new File(this.PATH_TO_DESTINATION + this.section + File.separator + this.studentFolderName );
+                // If zip entry contains the given file type then extract it
+                if(zpe.getName().contains(fileType)) {
 
-                        // make student folder sub directory
-                       studentFolder.mkdirs();
-                       extract(zis, studentFolder.getAbsolutePath() + File.separator + "Lab.java");
-                       break;
-                    }
+                    //Creates a folder with student name
+                    File studentFolder = new File(this.pathToDestination);
 
+                    // make student folder sub directory
+                   studentFolder.mkdirs();
+
+                   // extract it
+                   extract(zis, studentFolder.getAbsolutePath() + File.separator + filename + fileType);
+
+                }
+
+                // Keep looking for the given file type
                 zpe = zis.getNextEntry();
-
             }
+
             zis.close();
+        }catch(FileNotFoundException fnfe){
+            System.err.println("Error in file path in unzip " + fnfe.getMessage());
         }catch (IOException ioe){
             System.err.println("Error reading zip file in UnzipFile " + ioe.getMessage() );
         }
@@ -53,7 +58,6 @@ public class UnzipFile {
     private void extract(ZipInputStream zis, String extractTo){
         try {
             FileOutputStream fos = new FileOutputStream(extractTo);
-            System.out.println(extractTo);
             int read;
             while((read = zis.read(buffer)) != -1)
                 fos.write(buffer,0,read);

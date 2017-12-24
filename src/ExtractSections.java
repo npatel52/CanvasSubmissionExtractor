@@ -6,7 +6,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,6 +19,12 @@ public class ExtractSections {
             this.section = sectionNumber;
     }
 
+    /**
+     * Reads excel file and create a list of student name
+     * that corresponds to the given section number.
+     *
+     * @return list of student name
+     */
     public List<String> ExtractSection(){
 
         File excelFile;
@@ -72,126 +77,31 @@ public class ExtractSections {
         }
 
         return result;
-
     }
 
-    /*
 
-
-
-        FileReordering fileReordering;
-        File [] submissions;
-        int fileCounter = 0;
-        boolean hit = false;
-        int previousCount = fileCounter;
-
-            // Load all the files under submission [All files must be zip]
-            submissions = (new File("submissions/")).listFiles();
-     if (sectionNumber.equals(this.section)) {
-
-                    String zipFileName = submissions[fileCounter].getName();
-
-                    // Not good
-                  if(!hit){
-                      fileCounter = previousCount;
-                  }else{
-                      previousCount = fileCounter;
-                  }
-
-                    // Iterate until last name's first letter changes
-                   while(!sName.equals(zipFileName.substring(0,zipFileName.indexOf('_',0))) ){
-                       zipFileName = submissions[fileCounter].getName();
-                       if(zipFileName.charAt(0) > sName.charAt(0))
-                           break;
-                       ++fileCounter;
-                   }
-
-                    // Checks if student submission is missing
-                    // File naming format studentname_digits
-                    if(sName.equals(zipFileName.substring(0,zipFileName.indexOf('_',0)))){
-                        // Submission found
-                        // Adding it to appropriate folder
-                        hit = true;
-                        System.out.println(sName);
-                        fileReordering = new FileReordering(this.pathToSource, this.section, nameCell.getStringCellValue());
-
-                        System.out.println("Sent for ordering " + sName);
-                        fileReordering.unzip();
-                    }else{ // Submission Missing
-                        hit = false;
-                        System.out.println("Submission Missing " + sName + " " + zipFileName);
-                    }
-
-
-
+    /**
+     * Formats student name to match file names. Removes a non-word character such as
+     * '-', ',', ''', whitespace etc. Also converts uppercase to lowercase.
+     * @param studentName name of a student as retrieved from excel spreadsheet
+     * @return a formatted string where student's last name and first name are appended
      */
-    /*
-    public void ExtractAllSections(){
-        try{
-            excelFile = new File(EXCEL_FILE_PATH);
-            fin = new FileInputStream(excelFile);
-            // XSSF denotes operations realated to Excel 2007 or later
-            excelWorkbook = new XSSFWorkbook(fin);
-            // Gets the first excel spreedsheet
-            Sheet studentSheet = excelWorkbook.getSheetAt(0);
-
-            // Iterator to traverse row by row
-            Iterator<Row> row = studentSheet.rowIterator();
-
-            // Loop while there is data in a row
-            while(row.hasNext()){
-                // Gets current row
-                Row currentRow = row.next();
-
-                // Iterator for reading cell by cell in a row
-                Iterator<Cell> cellIterator = currentRow.cellIterator();
-
-                // cell corresponding to two columns
-                Cell nameCell = cellIterator.next();
-                Cell sectionCell = cellIterator.next();
-
-                // Temporaries
-                String sName = getStudentName(nameCell.getStringCellValue());
-                String section = getSection(sectionCell.getStringCellValue());
-
-                if(sectionToStudentMap == null){
-                    List<String> temp = new ArrayList<>();
-                    temp.add(sName);
-                    sectionToStudentMap.put(section,temp);
-                }else {
-                    if (sectionToStudentMap.containsKey(section)) {
-                        sectionToStudentMap.get(section).add(sName);
-                    } else {
-                        List<String> temp = new ArrayList<>();
-                        temp.add(sName);
-                        sectionToStudentMap.put(section, temp);
-                    }
-                }
-            }
-
-            // Close streams
-            excelWorkbook.close();
-            fin.close();
-
-        }catch (FileNotFoundException fnfe){
-            System.err.println("Error in File path " + fnfe.getMessage());
-        }
-        catch (IOException ioe){
-            System.err.println("Error in opening excel file. Check file type! " + ioe.getMessage());
-        }
-    }
-*/
-
-
-
     private String getStudentName(String studentName){
-        // Format stored in Excel LastName, FirstName
-        StringBuilder result = new StringBuilder(studentName);
-        result.delete(result.indexOf(","), result.indexOf(",") + 2);
-        return result.toString().toLowerCase();
+        if(studentName == null)
+            return null;
+        // removes non-word character by replacing it with empty string
+        return studentName.replaceAll("\\W+","").toLowerCase();
     }
 
+    /**
+     * Removes some unnecessary characters.
+     * @param sectionNumber section number as retrieved from excel spreadsheet
+     * @return formatted string with extra characters removed.
+     */
     private String getSection(String sectionNumber){
+        if(sectionNumber == null)
+            return null;
+        // Excludes extra characters as all sections belong to COP3502
         return sectionNumber.substring("COP3502-".length());
     }
 
