@@ -49,7 +49,7 @@ public class CanvasSubmissionExtractor extends Application {
 
         // To remove default focus from text field
         sectionInput.focusedProperty().addListener(((observable, oldValue, newValue) -> {
-            if(onInit.get() && newValue){
+            if(onInit.get()){
                 hBox.requestFocus();
                 onInit.setValue(false); // Change to false after first load
             }
@@ -60,12 +60,19 @@ public class CanvasSubmissionExtractor extends Application {
         primaryStage.show();
 
         extract.setOnAction(event -> {
-            onExtractClick(sectionInput.getText());
+            // Take multiple inputs comma seprated
+            String[] sections = sectionInput.getText().split("\\,");
+            for(String section: sections)
+                onExtractClick(section);
+            
+            showAlertDialog("Task Completed", "", Alert.AlertType.INFORMATION);
         });
     }
 
     /**
-     * Handles button click
+     * Handles button click. Used main functionality of the program.
+     * Extract files for a given section.
+     * @param section a section number in course
      */
     public static void onExtractClick(String section) {
         if (isValidSection(section)) {
@@ -73,7 +80,6 @@ public class CanvasSubmissionExtractor extends Application {
             Once section is partially validated, there must be two files in the current directory
             an excel file and a submission file.
             */
-
 
             // Submission file must be name submissions
             File submissionFile = new File(System.getProperty("user.dir") + File.separator + "submissions" + File.separator);
@@ -97,8 +103,6 @@ public class CanvasSubmissionExtractor extends Application {
 
                     // Unzip java files only
                     fo.unzipFiles(".java");
-
-                    showAlertDialog("Task Completed", "", Alert.AlertType.INFORMATION);
                 }else{
                     showAlertDialog("File Access Error", "Excel file is missing!",Alert.AlertType.ERROR);
                 }
