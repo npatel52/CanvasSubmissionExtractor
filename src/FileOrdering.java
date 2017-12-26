@@ -1,10 +1,10 @@
 import java.io.File;
 import java.util.List;
 
-public class FileReordering {
+public class FileOrdering {
 
-    private final String PATH_TO_DESTINATION = "out" + File.separator;
-    private final String PATH_TO_SOURCE = "submissions" + File.separator;
+    private final String PATH_TO_DESTINATION = System.getProperty("user.dir") + File.separator;
+    private final String PATH_TO_SOURCE = System.getProperty("user.dir") + File.separator + "submissions" + File.separator;
     private final String SECTION;
 
     private List<String> studentList;
@@ -16,7 +16,7 @@ public class FileReordering {
      * @param section a section number in the course
      * @param studentList a list of names in the section
      */
-    public FileReordering(String section, List<String> studentList){
+    public FileOrdering(String section, List<String> studentList){
         this.SECTION = section;
         this.studentList = studentList;
 
@@ -34,14 +34,14 @@ public class FileReordering {
      * Creates empty folder for students whose submission is missing.
      *
      */
-    public void unzipFiles(){
+    public void unzipFiles(String fileType){
         for(String name: studentList){
             String pathToZipFile = searchPathTo(name);
             if(pathToZipFile == null) {
                 createFolder(name + "-Missing!");
             }else{
               extractFile(pathToZipFile,
-                        PATH_TO_DESTINATION + this.SECTION + File.separator + name, ".java", "Lab");
+                        PATH_TO_DESTINATION + this.SECTION + File.separator + name, fileType, "Lab");
             }
         }
     }
