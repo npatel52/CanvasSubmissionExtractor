@@ -21,10 +21,10 @@ First column must be student names and second column must be the section name fo
 
 # 3.
 
-# For single section number: 
+# For single section: 
 Enter section name and hit extract. Example: 1123
 This will create a folder with section name and sub folders for each student with their submission file.
 
-# For multiple section:
+# For multiple sections:
 Enter each section followed by a comma and hit extract. Example: 11H5,1140,1123.
 This will create individual folders for each sections and subfolders for each students with their submission file.
