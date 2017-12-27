@@ -10,14 +10,17 @@ an excel file to retrieve submission file of students for a given section from l
 
 # How to use it?
 
-1. Download the jar file.
-2. Place extracted submissions file and excel file in a folder where the jar file is located.
+# 1.
+Download the jar file.
+# 2.
+Place extracted submissions file and excel file in a folder where the jar file is located.
 
 # Excel file Note
 The excel file must have two columns only. 
 First column must be student names and second column must be the section name for that student.
 
-3. 
+# 3.
+
 # For single section number: 
 Enter section name and hit extract. Example: 1123
 This will create a folder with section name and sub folders for each student with their submission file.
