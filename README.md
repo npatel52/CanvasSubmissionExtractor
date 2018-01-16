@@ -1,4 +1,4 @@
-# CanvasSubmissionExtractor
+# Canvas Submission Extractor
 
 # What is it?
 
